@@ -2,13 +2,29 @@ var connect = require('connect');
 
 var app = connect();	// connect() 함수는 connect 객체를 반환한다.
 
+// 미들웨어 함수
+// Request 객체에 새로운 속성을 추가
 app.use(function(req, res, next) {
 	var remoteAddr = req.connection.remoteAddress;
 	req['ip'] = remoteAddr;
 	next();
 });
 
+// 미들웨어 함수 등록
 app.use(logger);
+
+// use() 함수의 첫번째 인자가 문자열이면 커넥터는 url 과 일치할 때만 미들웨어 함수를 실행한다.
+app.use('/home', function(req, res) {
+	res.setHeader('Content-Type', 'text/plane');
+	res.end("Home Page!");
+});
+
+app.use('/about', function(req, res) {
+	res.setHeader('Content-Type', 'text/plane');
+	res.end("About Page!");
+});
+
+// 미들웨어 함수 등록
 app.use(hello);
 
 app.listen(3000);
