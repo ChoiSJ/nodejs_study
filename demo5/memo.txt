@@ -1,0 +1,12 @@
+라우팅 데모 애플리케이션
+	- 모듈
+		- express
+		- forecastio		: 날씨 무료 API
+		- ejs				: html 뷰 렌더링
+		- node-geocoder		: 주소를 위/경도 좌표로 변환
+		- dateformat		: 날짜를 문자열 포맷으로 변환
+
+ 	- 주소를 입력받아서 현재 기온 및 1주일간의 날씨를 조회하기
+
+ 	
+	
