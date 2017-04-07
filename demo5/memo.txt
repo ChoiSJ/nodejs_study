@@ -1,12 +1,6 @@
-라우팅 데모 애플리케이션
-	- 모듈
-		- express
-		- forecastio		: 날씨 무료 API
-		- ejs				: html 뷰 렌더링
-		- node-geocoder		: 주소를 위/경도 좌표로 변환
-		- dateformat		: 날짜를 문자열 포맷으로 변환
-
- 	- 주소를 입력받아서 현재 기온 및 1주일간의 날씨를 조회하기
-
- 	
-	
+모듈
+	- dateformat: 날짜를 지정된 포맷의 문자열로 변환
+	- forecastio: 위도/경도가 가리키는 지역의 날씨 정보를 제공하는 모듈
+	- node-geocoder: 주소를 위도/경도 좌표로 변환하는 모듈
+	- Dark Sky API key = c28d0c8402a38e2b177551979b32240b
+	- google API key = AIzaSyAUlw1fE1Ai5MNkEJ6WztjGary6l7O6dVw

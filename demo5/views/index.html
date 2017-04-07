@@ -1,97 +1,76 @@
 <% include header.html %>
-
-
-<div class="row">
-	<h1>날씨 조회</h1>	
-
-	<form class="form-horizontal well">
-		<div class="form-group">
-			<label class="control-label col-sm-2">주소</label>
-			<div class="col-sm-8">
-				<input type="text" class="form-control" name="address" required />
+	<div class="row">
+		<h1>날씨 조회</h1>
+		<form class="form-horizontal well">
+			<div class="form-group">
+				<lable class="control-label col-xs-2">주소</lable>
+				<div class="col-xs-8">
+					<input type="text" class="form-control" name="address" required="required">
+				</div>
+				<div class="col-xs-2">
+					<button type="submit" class="btn btn-info">조회</button>
+				</div>
 			</div>
-			<div class="col-sm-2">
-				<button type="submit" class="btn btn-success">조회</button>
-			</div>
-		</div>
-	</form>
-	
-</div>
-
-<div class="row">
-	<div class="panel pane-default">
-		<div class="panel-body" id="currently-box">현재 기온: </div>
-		<div class="panel-body" id="daily-box">
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th>Date</th>
-						<th>Weather</th>
-						<th>Temperature Min</th>
-						<th>Temperature Max</th>
-						<th>Summary</th>
-					</tr>
-				</thead>
-				<tbody></tbody>
-			</table>
-		</div>
+		</form>
 	</div>
 
-</div>
-
+	<div class="row">
+		<div class="panel panel-primary">
+			<div class="panel-body">
+				<canvas id="current-icon" width="32px" height="32px"></canvas>
+				<span id="current-addr"></span>
+				<span id="current-temp"></span> 
+			</div>
+			<div class="panel-body">
+				<table class="table table-striped" id="daily-table">
+					<thead>
+						<tr>
+							<th>날짜</th>
+							<th>날씨</th>
+							<th>최저 기온</th>
+							<th>최고 기온</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 <script>
-	$(function() {
+$(function() {
 
+	function getIconName(icon) {
+		return icon.toUpperCase().replace(/-/g, '_');
+	}
 
-		$('table').hide();
+	$("form").on("submit", function(event) {
+		event.preventDefault();
+		var addressValue = $.trim($(":input[name='address']").val());
 
-		$('form').on('submit', function(event) {
-			event.preventDefault();
+		var request = $.ajax({
+			url:'/weather/' + addressValue,
+			dataType: 'json'
+		});
 
-			var address = $.trim($('input[name=address]').val());
-			$("#currently-box").text("Loading...");
+		// ajax 요청이 성공했을 때
+		request.done(function(data) {
+			var skycons = new Skycons({color:'black'});
+			var currentlyIcon = data.currently.icon;
+			skycons.add($("#current-icon")[0], Skycons[getIconName(currentlyIcon)]);
 
-			var request = $.ajax({
-				url:"/"+address,
-				dataType:'json'
-			});
+			$("#current-addr").text(data.address);
+			$("#current-temp").text(data.currently.temperature + "도");
 
-			request.done(function(data) {
+			skycons.play();
+		});
 
-				var skycons = new Skycons({"color": "black"});
+		// ajax 요청이 실패했을 때
+		request.fail(function() {
 
-				var currentTemperature = data.current;
-				$("#currently-box").text('현재 기온: 섭씨 ' + currentTemperature + " 도");
-
-				$('table').show();
-				var $dailybox = $("#daily-box tbody").empty();
-
-				$.each(data.daily, function(index, item) {
-
-					var icon = item.icon.toUpperCase().replace(/-/g, '_');
-
-					var $tr = $("<tr></tr>");
-					$tr.append('<td>'+item.day+'</td>');
-					$tr.append('<td><canvas width="32" height="32" id="icon-'+index+'"></td>');
-					$tr.append('<td>'+item.min+' 도</td>');
-					$tr.append('<td>'+item.max+' 도</td>');
-					$tr.append('<td>'+item.summary+'</td>');
-					$dailybox.append($tr);
-
-					skycons.add(document.getElementById("icon-" + index), Skycons[icon]);
-
-				});
-
-				skycons.play();
-
-			});
-			request.fail(function() {
-				$("#viecurrentlyw-box").text('Error!');
-				$('table').hide();
-			})
-		})
+		});
 	});
-
+})
 </script>
-
 <% include footer.html %>
