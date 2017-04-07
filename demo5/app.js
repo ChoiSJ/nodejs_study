@@ -31,7 +31,7 @@ app.get("/", function(req, res) {
 });
  
  // 날씨 정보를 json 으로 제공
-app.get("/weather/:address", function(req, res) {
+app.get("/weather/:address", function(req, res, next) {
 	var address = req.params.address;
 	console.log("요청받은 주소:", address);
 
@@ -43,7 +43,7 @@ app.get("/weather/:address", function(req, res) {
 		}
 
 		if (!data.length) {
-			next();
+			next(new Error("결과 없음"));
 			return;
 		}
 
@@ -65,7 +65,9 @@ app.get("/weather/:address", function(req, res) {
 			// 주간 날씨
 			var dailyWeather = [];
 
-			weatherData.daily.data.forEach(function(item, index) {
+			// daliyWeatherDataArray -> [{}, {}, {}, {}, {}, {}, {}]
+			var dailyWeatherDataArray = weatherData.daily.data;
+			dailyWeatherDataArray.forEach(function(item, index) {
 				dailyWeather.push({
 					date: timeToString(item.time),
 					min: fToc(item.temperatureMin),
@@ -93,6 +95,11 @@ app.get("/weather/:address", function(req, res) {
 app.use(function(req, res) {
 	res.status(404);
 	res.render('404.html');
+});
+
+app.use(function(err, req, res, next) {
+	res.status(500);
+	res.end();
 });
 
 app.listen(3000, function() {

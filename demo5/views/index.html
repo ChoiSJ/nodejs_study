@@ -63,12 +63,27 @@ $(function() {
 			$("#current-addr").text(data.address);
 			$("#current-temp").text(data.currently.temperature + "도");
 
+			var $tbody = $("#daily-table tbody").empty();
+			$.each(data.daily, function(index, item) {
+				var $tr = $("<tr></tr>");
+
+				$tr.append("<td>"+item.date+"</td>");
+				$tr.append("<td><canvas id='daily-"+index+"' width='32px' height='32px'></canvas></td>");
+				$tr.append("<td>"+item.min+"</td>");
+				$tr.append("<td>"+item.max+"</td>");
+
+				$tbody.append($tr);
+
+				skycons.add($("#daily-" + index)[0], Skycons[getIconName(item.icon)]);
+			});
+
 			skycons.play();
 		});
 
 		// ajax 요청이 실패했을 때
 		request.fail(function() {
-
+			var $tbody = $("#daily-table tbody").empty();
+			$tbody.append("<tr><td colspan=4>오류가 발생하였습니다.</td></tr>");
 		});
 	});
 })
