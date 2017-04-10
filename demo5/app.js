@@ -101,6 +101,7 @@ app.use(function(err, req, res, next) {
 	res.status(500);
 	res.end();
 });
++
 
 app.listen(3000, function() {
 	console.log("서버 시작됨...");
