@@ -11,7 +11,7 @@ var option = {
 var geocoder = NodeGeocoder(option);
 var weather = new ForecastIO('API Number');
 
-var address = '右京区太秦三尾町1-15';
+var address = 'Address';
 geocoder.geocode(address, function(err, data) {
 	if (err) {				// 에러발생
 		return;

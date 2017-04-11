@@ -1,9 +1,11 @@
-var path = require('path');				// 경로 관련 모듈
-var logger = require('morgan');			// 로그 출력 관련 모듈
-var express = require('express');		// 웹 애플리케이션 미들웨어 지원
-var ejs = require('ejs');				// 뷰 템플릿 엔진 모듈
+var path = require('path');					// 경로 관련 모듈
+var logger = require('morgan');				// 로그 출력 관련 모듈
+var express = require('express');			// 웹 애플리케이션 미들웨어 지원
+var ejs = require('ejs');					// 뷰 템플릿 엔진 모듈
 var bodyParser = require('body-parser');	// 폼 입력값 처리 모듈
-var dataformat = require('dataformat');	// 날짜를 지정된 형식의 문자열로 변환
+var dateformat = require('dateformat');		// 날짜를 지정된 형식의 문자열로 변환
+
+var Todo = require('./db/todo.js');
 
 var app = express();
 
@@ -24,7 +26,79 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 // 라우팅 설정
 app.get('/todos', function(req, res, next) {
-	res.render("index.html");
+	Todo.getAllTodos(function(err, todos) {
+		if (err) {
+			next(err);
+			return;
+		}
+
+		res.render("index.html", {"todos":todos, "df":dateformat});
+	});
+});
+
+app.get('/create', function(req, res) {
+	res.render("form.html");
+});
+
+app.post('/create', function(req, res, next) {
+	var todo = {
+		type: req.body.type,
+		title: req.body.title,
+		description: req.body.description,
+		regdate: new Date(),
+		completed: false
+	};
+
+	Todo.addTodo(todo, function(err) {
+		if (err) {
+			next(err);
+			next;
+		}
+
+		res.redirect("/todos");
+	});
+});
+
+app.get('/completed/:id', function(req, res, next) {
+	var id = req.params.id;
+
+	Todo.completedTodo(id, function(err) {
+		if (err) {
+			next(err);
+			return;
+		}
+
+		res.redirect("/todos");
+	});
+});
+
+app.get('/delete/:id', function(req, res, next) {
+	var id = req.params.id;
+
+	Todo.deleteTodo(id, function(err) {
+		if (err) {
+			next(err);
+			return;
+		}
+
+		res.redirect("/todos");
+	});
+});
+
+// 요청 url 과 일치하는 라우팅 정보가 없을 때 에러 페이지를 제공하는 미들웨어 함수
+app.use(function(req, res) {
+	res.render('404.html');
+});
+
+// 에러 발생시 에러를 화면에 표시하는 미들웨어 함수
+app.use(function(err, req, res, next) {
+	console.log(err);
+	next(err);
+});
+
+// 에러 발생시 사용자에게 에러 페이지를 제공하는 미들웨어 함수
+app.use(function(err, req, res, next) {
+	res.render('500.html');
 });
 
 app.listen(3000, function() {
