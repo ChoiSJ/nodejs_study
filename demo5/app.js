@@ -9,12 +9,12 @@ var dateformat = require('dateformat');
 var option = {
 	provider:'google',
 	httpAdapter:'https',
-	apikey:'AIzaSyAUlw1fE1Ai5MNkEJ6WztjGary6l7O6dVw',
+	apikey:'API Number',
 	formatter:null
 };
 
 var geocoder = NodeGeocoder(option);
-var weather = new ForecastIO('c28d0c8402a38e2b177551979b32240b');
+var weather = new ForecastIO('API Number');
 
 var app = express();
 

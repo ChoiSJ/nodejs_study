@@ -4,12 +4,12 @@ var ForecastIO = require('forecastio');
 var option = {
 	provider:'google',
 	httpAdapter:'https',
-	apikey:'AIzaSyAUlw1fE1Ai5MNkEJ6WztjGary6l7O6dVw',	// google api key
+	apikey:'API Number',	// google api key
 	formatter:null
 };
 
 var geocoder = NodeGeocoder(option);
-var weather = new ForecastIO('c28d0c8402a38e2b177551979b32240b');
+var weather = new ForecastIO('API Number');
 
 var address = '右京区太秦三尾町1-15';
 geocoder.geocode(address, function(err, data) {
