@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" ng-app="myApp">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+<script type="text/javascript">
+	var myApp = angular.module("myApp", []);
+
+	myApp.controller("bookCtrl", function($scope, $http) {
+		// $http 를 이용해서 GET 방식의 ajax 요청 보내기
+		$http.get("books/").then(function(response) {
+			// response 객체는 서버가 보낸 데이터, 응답코드 등을 담고 있는 객체다.
+			// response.status: http 응답코드
+			// response.data: 서버가 보낸 응답데이터
+			$scope.bookList = response.data;
+		});
+	});
+</script>
+</head>
+<body>
+<div class="container">
+	<h1>도서 관리 프로그램</h1>
+	<table class="table table-bordered" ng-controller="bookCtrl">
+		<thead>
+			<tr>
+				<th>번호</th>
+				<th>제목</th>
+				<th>저자</th>
+				<th>가격</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="book in bookList">
+				<td>{{book.no}}</td>
+				<td>{{book.title}}</td>
+				<td>{{book.author}}</td>
+				<td>{{book.price}}</td>
+			</tr>		
+		</tbody>
+	</table>
+</div>
+</body>
+</html>
