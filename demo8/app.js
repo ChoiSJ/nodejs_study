@@ -27,6 +27,15 @@ app.get('/books/', function(req, res) {
 	res.json(books);
 });
 
+app.post("/books/", function(req, res) {
+	console.log("새로운 도서 정보 등록을 요청받았음.");
+	console.log("새 책 정보 -> ", req.body);
+	var book = req.body;
+	books.push(book);
+
+	res.json(books);
+});
+
 app.listen(3000, function() {
 	console.log("서버가 시작되었습니다.");
 });

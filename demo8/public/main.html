@@ -16,13 +16,24 @@
 			// response.data: 서버가 보낸 응답데이터
 			$scope.bookList = response.data;
 		});
+
+		$scope.addNewBook = function(newBook) {
+			// newBook -> 책정보를 담고 있는 자바스크립트 객체
+			// JSON.stringify(newBook) -> 자바스크립트 객체를 json 형식의 텍스트로로 변환
+			$http.post("books/", JSON.stringify(newBook)).then(function(response) {
+				$scope.bookList = response.data;
+			}, function(response) {
+				alert("오류 발생");
+			});
+		}
 	});
 </script>
 </head>
-<body>
+<body ng-controller="bookCtrl">
 <div class="container">
 	<h1>도서 관리 프로그램</h1>
-	<table class="table table-bordered" ng-controller="bookCtrl">
+
+	<table class="table table-bordered">
 		<thead>
 			<tr>
 				<th>번호</th>
@@ -40,6 +51,32 @@
 			</tr>		
 		</tbody>
 	</table>
+
+	<p>{{bookForm.$valid}}</p>
+
+	<div class="row">
+		<form name="bookForm" novalidate ng-submit="addNewBook(book)">
+			<div class="form-group">
+				<label for="">번호</label>
+				<input type="number" class="form-control" ng-model="book.no" required>
+			</div>
+			<div class="form-group">
+				<label for="">제목</label>
+				<input type="text" class="form-control" ng-model="book.title" required>
+			</div>
+			<div class="form-group">
+				<label for="">저자</label>
+				<input type="text" class="form-control" ng-model="book.author" required>
+			</div>
+			<div class="form-group">
+				<label for="">가격</label>
+				<input type="number" class="form-control" ng-model="book.price" required>
+			</div>
+			<div class="form-group">
+				<button class="btn btn-default btn-sm" ng-disabled="bookForm.$invalid">등록</button>
+			</div>
+		</form>
+	</div>
 </div>
 </body>
 </html>
